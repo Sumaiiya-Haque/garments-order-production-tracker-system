@@ -1,19 +1,51 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiMenu, FiX } from "react-icons/fi";
 
 const Navbar = ({ user, onLogout }) => {
   const [open, setOpen] = useState(false);
 
+  const menuLinks = (
+    <>
+      <NavLink className="hover:text-indigo-600 transition" to="/">Home</NavLink>
+      <NavLink className="hover:text-indigo-600 transition" to="/products">All-Products</NavLink>
+
+      {!user && (
+        <>
+          <NavLink className="hover:text-indigo-600 transition" to="/about">About Us</NavLink>
+          <NavLink className="hover:text-indigo-600 transition" to="/contact">Contact</NavLink>
+          <NavLink className="px-3 py-1 border rounded-md border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition" to="/login">
+            Login
+          </NavLink>
+          <NavLink className="px-3 py-1 rounded-md bg-primary text-white hover:bg-yellow-300 transition" to="/register">
+            Register
+          </NavLink>
+        </>
+      )}
+
+      {user && (
+        <>
+          <NavLink className="hover:text-indigo-600 transition" to="/dashboard">Dashboard</NavLink>
+        </>
+      )}
+    </>
+  );
+
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-
+          
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 flex items-center justify-center rounded-md bg-indigo-600 text-white font-bold">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="w-10 h-10 flex items-center justify-center rounded-md bg-primary text-white font-bold"
+            >
               GO
-            </div>
+            </motion.div>
             <div>
               <div className="font-semibold text-gray-800">GarmentsTracker</div>
               <div className="text-xs text-gray-500">Order & Production</div>
@@ -21,105 +53,75 @@ const Navbar = ({ user, onLogout }) => {
           </Link>
 
           {/* Desktop Menu */}
-          <nav className="hidden md:flex items-center gap-6">
-            <NavLink to="/" className="text-gray-700 hover:text-indigo-600">Home</NavLink>
-            <NavLink to="/products" className="text-gray-700 hover:text-indigo-600">All-Products</NavLink>
-
-            {!user && (
-              <>
-                <NavLink to="/about" className="text-gray-700 hover:text-indigo-600">About Us</NavLink>
-                <NavLink to="/contact" className="text-gray-700 hover:text-indigo-600">Contact</NavLink>
-                <NavLink to="/login" className="px-3 py-1 border rounded-md border-indigo-600 text-indigo-600">Login</NavLink>
-                <NavLink to="/register" className="px-3 py-1 rounded-md bg-indigo-600 text-white">Register</NavLink>
-              </>
-            )}
+          <nav className="hidden md:flex items-center gap-6 text-gray-700">
+            {menuLinks}
 
             {user && (
-              <>
-                <NavLink to="/dashboard" className="text-gray-700 hover:text-indigo-600">Dashboard</NavLink>
-
-                <div className="flex items-center gap-3">
-                  <img  
+              <div className="dropdown dropdown-end">
+                <div tabIndex={0} role="button" className="flex items-center gap-2">
+                  <img
                     src={user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`}
                     alt="avatar"
                     className="w-8 h-8 rounded-full border object-cover"
                   />
-                  <button
-                    onClick={onLogout}
-                    className="px-3 py-1 bg-red-500 text-white rounded-md hover:opacity-90"
-                  >
-                    Logout
-                  </button>
                 </div>
-              </>
+                <ul tabIndex={0} className="dropdown-content menu bg-white rounded-md shadow-md w-40 p-2">
+                  <li><span className="text-sm px-2">{user.displayName}</span></li>
+                  <li>
+                    <button onClick={onLogout} className="text-red-500">Logout</button>
+                  </li>
+                </ul>
+              </div>
             )}
           </nav>
 
-          {/* Mobile Button */}
-          <button
-            className="md:hidden p-2 rounded-md"
-            onClick={() => setOpen(!open)}
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor">
-              <path
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d={
-                  open
-                    ? "M6 18L18 6M6 6l12 12"
-                    : "M4 6h16M4 12h16M4 18h16"
-                }
-              />
-            </svg>
+          {/* Mobile Menu Button */}
+          <button className="md:hidden" onClick={() => setOpen(!open)}>
+            {open ? <FiX size={26} /> : <FiMenu size={26} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {open && (
-        <div className="md:hidden border-t px-4 py-4 space-y-2">
-          <NavLink to="/" onClick={() => setOpen(false)} className="block">Home</NavLink>
-          <NavLink to="/products" onClick={() => setOpen(false)} className="block">All-Products</NavLink>
+      {/* Mobile Dropdown */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="md:hidden bg-white px-4 pb-4 shadow-inner"
+          >
+            <div className="flex flex-col space-y-3 py-3">
+              {menuLinks}
 
-          {!user && (
-            <>
-              <NavLink to="/about" onClick={() => setOpen(false)} className="block">About Us</NavLink>
-              <NavLink to="/contact" onClick={() => setOpen(false)} className="block">Contact</NavLink>
-              <NavLink to="/login" onClick={() => setOpen(false)} className="block">Login</NavLink>
-              <NavLink to="/register" onClick={() => setOpen(false)} className="block bg-indigo-600 text-white px-3 py-2 rounded-md">
-                Register
-              </NavLink>
-            </>
-          )}
+              {user && (
+                <div className="pt-2 border-t">
+                  <div className="flex items-center gap-3 mb-3">
+                    <img
+                      src={user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`}
+                      className="w-8 h-8 rounded-full border"
+                    />
+                    <span>{user.displayName}</span>
+                  </div>
 
-          {user && (
-            <>
-              <NavLink to="/dashboard" onClick={() => setOpen(false)} className="block">Dashboard</NavLink>
-
-              <div className="flex items-center gap-3">
-                <img  
-                  src={user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`}
-                  className="w-8 h-8 rounded-full border"
-                />
-                <span>{user.displayName}</span>
-              </div>
-
-              <button
-                onClick={() => {
-                  setOpen(false);
-                  onLogout();
-                }}
-                className="bg-red-500 text-white px-3 py-2 rounded-md w-full"
-              >
-                Logout
-              </button>
-            </>
-          )}
-        </div>
-      )}
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      onLogout();
+                    }}
+                    className="w-full bg-red-500 text-white py-2 rounded-md"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
 
 export default Navbar;
+
