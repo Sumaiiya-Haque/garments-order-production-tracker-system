@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import { Link, NavLink } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
+import useAuth from "../../../../hooks/useAuth";
 
-const Navbar = ({ user, onLogout }) => {
+
+const Navbar = () => {
+  const { user, logOut } = useAuth(); 
   const [open, setOpen] = useState(false);
 
   const menuLinks = (
     <>
       <NavLink className="hover:text-indigo-600 transition" to="/">Home</NavLink>
-      <NavLink className="hover:text-indigo-600 transition" to="/products">All-Products</NavLink>
+      <NavLink className="hover:text-indigo-600 transition" to="/all-products">All-Products</NavLink>
 
       {!user && (
         <>
@@ -25,9 +28,7 @@ const Navbar = ({ user, onLogout }) => {
       )}
 
       {user && (
-        <>
-          <NavLink className="hover:text-indigo-600 transition" to="/dashboard">Dashboard</NavLink>
-        </>
+        <NavLink className="hover:text-indigo-600 transition" to="/dashboard">Dashboard</NavLink>
       )}
     </>
   );
@@ -36,7 +37,6 @@ const Navbar = ({ user, onLogout }) => {
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
             <motion.div
@@ -68,7 +68,12 @@ const Navbar = ({ user, onLogout }) => {
                 <ul tabIndex={0} className="dropdown-content menu bg-white rounded-md shadow-md w-40 p-2">
                   <li><span className="text-sm px-2">{user.displayName}</span></li>
                   <li>
-                    <button onClick={onLogout} className="text-red-500">Logout</button>
+                    <button
+                      onClick={logOut} 
+                      className="text-red-500"
+                    >
+                      Logout
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -107,7 +112,7 @@ const Navbar = ({ user, onLogout }) => {
                   <button
                     onClick={() => {
                       setOpen(false);
-                      onLogout();
+                      logOut(); 
                     }}
                     className="w-full bg-red-500 text-white py-2 rounded-md"
                   >
@@ -124,4 +129,5 @@ const Navbar = ({ user, onLogout }) => {
 };
 
 export default Navbar;
+
 

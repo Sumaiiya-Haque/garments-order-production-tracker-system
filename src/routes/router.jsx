@@ -4,27 +4,95 @@ import { Component } from "react";
 import Home from "../pages/Home/Shared/Home/Home";
 import Login from "../pages/Auth/Login/Login";
 import Register from "../pages/Auth/Register/Register";
+import AllProducts from "../pages/Products/AllProducts";
+import About from "../pages/Home/Shared/Navbar/About";
+import Contact from "../pages/Home/Shared/Navbar/Contact";
+import DashboardLayout from "../layouts/DashboardLayout";
+import ManagerRoute from "./ManagerRoute";
+import AddProduct from "../pages/Dashboard/Manager/AddProduct";
+import ManageProducts from "../pages/Dashboard/Manager/ManageProducts";
+import PendingOrders from "../pages/Dashboard/Manager/PendingOrders";
+import ApprovedOrders from "../pages/Dashboard/Manager/ApprovedOrders";
+import ManagerProfile from "../pages/Dashboard/Manager/ManagerProfile";
+// import AuthLayout from "../layouts/AuthLayout";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component:RootLayout,
-    children:[
+    Component: RootLayout,
+    children: [
       {
-        index:true,
-        Component:Home,
-      }
-    ]
+         index: true,
+          Component: Home
+         },
+      {
+         path: "login",
+          Component: Login
+         },
+      { 
+        path: "register", 
+        Component: Register
+       },
+      {
+         path: "all-products",
+          Component: AllProducts 
+        },
+      {
+         path: "about",
+          Component: About },
+      {
+         path: "contact",
+         Component: Contact
+
+       },
+    ],
   },
-  
+
+  // 🔐 Dashboard Routes
+  {
+    path: "/dashboard",
+    Component: DashboardLayout,
+    children: [
       {
-        path: "login",
-        Component: Login,
+        path: "add-product",
+        element: (
+          <ManagerRoute>
+            <AddProduct />
+          </ManagerRoute>
+        ),
       },
       {
-        path: "register",
-        Component: Register,
+        path: "manage-products",
+        element: (
+          <ManagerRoute>
+            <ManageProducts />
+          </ManagerRoute>
+        ),
       },
-    
-  
+      {
+        path: "pending-orders",
+        element: (
+          <ManagerRoute>
+            <PendingOrders />
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "approved-orders",
+        element: (
+          <ManagerRoute>
+            <ApprovedOrders />
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "profile",
+        element: (
+          <ManagerRoute>
+            <ManagerProfile />
+          </ManagerRoute>
+        ),
+      },
+    ],
+  },
 ]);

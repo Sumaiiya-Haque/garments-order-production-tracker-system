@@ -1,92 +1,96 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-// import useAuth from "../../../hooks/useAuth";
-import { Link, useLocation, useNavigate } from "react-router";
+import React, { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router";
+import { FaEnvelope, FaLock } from "react-icons/fa";
+import Swal from "sweetalert2";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import useAuth from "../../../hooks/useAuth";
-// import useAuth from "../../../hooks/useAuth";
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { signInUser } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
-  // console.log("in the login page", location);
 
-  const handleLogin = (data) => {
-    console.log("form data", data);
-    signInUser(data.email, data.password)
-      .then((result) => {
-        console.log(result.user);
-        navigate(location?.state || '/')
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    // 🔥 Firebase login
+    signInUser(email, password)
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          text: "Welcome back!",
+        });
+
+        navigate(from, { replace: true });
       })
       .catch((error) => {
-        console.log(error);
+        Swal.fire("Error", error.message, "error");
       });
   };
 
   return (
-    <div className="card bg-base-100 w-full mx-auto max-w-sm shrink-0 shadow-2xl">
-      <h3 className="text-3xl text-center">Welcome Back</h3>
-      <p className="text-center">Please Login</p>
-      <form className="card-body" onSubmit={handleSubmit(handleLogin)}>
-        <fieldset className="fieldset">
-          {/* email */}
+    <div className="min-h-screen flex items-center justify-center bg-base-200">
+      <div className="card w-full max-w-md shadow-xl bg-base-100">
+        <div className="card-body">
+          <h2 className="text-2xl font-bold text-center">Login</h2>
 
-          <label className="label">Email</label>
-          <input
-            type="email"
-            {...register("email", {
-              required: true,
-            })}
-            className="input"
-            placeholder="Email"
-          />
+          <form onSubmit={handleLogin} className="space-y-4">
+            {/* Email */}
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text flex items-center gap-2">
+                  <FaEnvelope /> Email
+                </span>
+              </label>
+              <input
+                type="email"
+                className="input input-bordered"
+                placeholder="Enter email"
+                required
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
 
-          {errors.email?.type === "required" && (
-            <p className="text-red-500">Email is required</p>
-          )}
+            {/* Password */}
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text flex items-center gap-2">
+                  <FaLock /> Password
+                </span>
+              </label>
+              <input
+                type="password"
+                className="input input-bordered"
+                placeholder="Enter password"
+                required
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
 
-          {/* password */}
-          <label className="label">Password</label>
-          <input
-            type="password"
-            {...register("password", {
-              required: true,
-              minLength: 6,
-            })}
-            className="input"
-            placeholder="Password"
-          />
+            <button className="btn btn-primary w-full">Login</button>
+          </form>
 
-          {errors.password?.type === "minLength" && (
-            <p className="text-red-500">
-              Password must be 6 characters or longer{" "}
-            </p>
-          )}
+          {/* Google Login */}
+          <SocialLogin />
 
-          <div>
-            <a className="link link-hover">Forgot password?</a>
-          </div>
-          <button className="btn btn-neutral mt-4">Login</button>
-        </fieldset>
-        <p>
-          New to Zap Shift?{" "}
-          <Link
-           state={location.state}
-          className="text-blue-500 underline" to="/register">
-            Register
-          </Link>{" "}
-        </p>
-      </form>
-      <SocialLogin></SocialLogin>
+          <p className="text-center mt-4">
+            New here?{" "}
+            <Link to="/register" className="link link-primary">
+              Register
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default Login;
+
+

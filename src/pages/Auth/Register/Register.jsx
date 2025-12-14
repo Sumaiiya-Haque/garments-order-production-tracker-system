@@ -1,165 +1,176 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import useAuth from "../../../hooks/useAuth";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
+import Swal from "sweetalert2";
+import { FaUser, FaEnvelope, FaLock, FaImage } from "react-icons/fa";
 import SocialLogin from "../SocialLogin/SocialLogin";
-import axios from "axios";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
 
 const Register = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const [role, setRole] = useState("buyer");
   const { registerUser, updateUserProfile } = useAuth();
 
-  const location = useLocation();
   const navigate = useNavigate();
-  const axiosSecure = useAxiosSecure()
- 
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
-  const handleRegistration = (data) => {
-    
-    const profileImg = data.photo[0];
-    registerUser(data.email, data.password)
-      .then(() => {
-      
-        //store the image and get the photo url
+  // 🔑 imgbb api key
+  const imageHostingKey = "0c82c2c8707e2ebdb830fdcdc8ca8276";
+  const imageHostingUrl = `https://api.imgbb.com/1/upload?key=${imageHostingKey}`;
 
-        const formData = new FormData();
-        formData.append("image", profileImg);
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
-        const image_API_URL = `https://api.imgbb.com/1/upload?
-key=${import.meta.env.VITE_image_host_key}`;
+    const form = e.target;
+    const name = form.name.value;
+    const email = form.email.value;
+    const password = form.password.value;
+    const imageFile = form.photo.files[0];
 
-        axios.post(image_API_URL, formData).then((res) => {
-          const photoURL = res.data.data.url;
+    // ✅ Password Validation
+    if (!/[A-Z]/.test(password)) {
+      return Swal.fire("Error", "Password must contain an uppercase letter", "error");
+    }
+    if (!/[a-z]/.test(password)) {
+      return Swal.fire("Error", "Password must contain a lowercase letter", "error");
+    }
+    if (password.length < 6) {
+      return Swal.fire("Error", "Password must be at least 6 characters", "error");
+    }
 
-          // create user in the database
-          const userInfo = {
-            email:data.email,
-            displayName: data.name,
-            photoURL:photoURL,
-          } 
-          axiosSecure.post('/users',userInfo).then(res=>{
-            if(res.data.insertedId){
-              console.log('user created in the database')
-            }
-          })
+    try {
+      // 🔹 Image Upload
+      const formData = new FormData();
+      formData.append("image", imageFile);
 
-          // update user profile
-
-          const userProfile = {
-            displayName: data.name,
-            photoURL: photoURL,
-          };
-          updateUserProfile(userProfile)
-            .then(() => {
-              console.log("user Profile updated");
-              navigate(location?.state || '/')
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        });
-      })
-      .catch((error) => {
-        console.log(error);
+      const imgRes = await fetch(imageHostingUrl, {
+        method: "POST",
+        body: formData,
       });
+
+      const imgData = await imgRes.json();
+
+      if (!imgData.success) {
+        throw new Error("Image upload failed");
+      }
+
+      const photoURL = imgData.data.display_url;
+
+      // 🔹 Firebase Register
+      await registerUser(email, password);
+
+      // 🔹 Update Profile
+      await updateUserProfile({
+        displayName: name,
+        photoURL: photoURL,
+      });
+
+      Swal.fire({
+        icon: "success",
+        title: "Registration Successful",
+        text: "Status: Pending",
+      });
+
+      form.reset();
+      navigate(from, { replace: true });
+
+    } catch (error) {
+      Swal.fire("Error", error.message, "error");
+    }
   };
 
   return (
-    <div className="card bg-base-100 w-full mx-auto max-w-sm shrink-0 shadow-2xl">
-      <form className="card-body" onSubmit={handleSubmit(handleRegistration)}>
-        <fieldset className="fieldset">
-          {/* name field */}
-          <label className="label">Name</label>
-          <input
-            type="text"
-            {...register("name", {
-              required: true,
-            })}
-            className="input"
-            placeholder="Your Name"
-          />
+    <div className="min-h-screen flex items-center justify-center bg-base-200">
+      <div className="card w-full max-w-md shadow-xl bg-base-100">
+        <div className="card-body">
+          <h2 className="text-2xl font-bold text-center">Register</h2>
 
-          {errors.name?.type === "required" && (
-            <p className="text-red-500">Name is required.</p>
-          )}
+          <form onSubmit={handleRegister} className="space-y-4">
+            {/* Name */}
+            <div className="form-control">
+              <label className="label-text flex items-center gap-2">
+                <FaUser /> Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                required
+                className="input input-bordered"
+              />
+            </div>
 
-          {/* photo image field */}
-          <label className="label">Photo</label>
+            {/* Email */}
+            <div className="form-control">
+              <label className="label-text flex items-center gap-2">
+                <FaEnvelope /> Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                required
+                className="input input-bordered"
+              />
+            </div>
 
-          <input
-            type="file"
-            {...register("photo", {
-              required: true,
-            })}
-            className="file-input"
-            placeholder="Your Photo"
-          />
+            {/* Photo Upload */}
+            <div className="form-control">
+              <label className="label-text flex items-center gap-2">
+                <FaImage /> Photo
+              </label>
+              <input
+                type="file"
+                name="photo"
+                accept="image/*"
+                required
+                className="file-input file-input-bordered"
+              />
+            </div>
 
-          {errors.name?.type === "required" && (
-            <p className="text-red-500">Photo is required</p>
-          )}
+            {/* Role */}
+            <div className="form-control">
+              <label className="label-text">Role</label>
+              <select
+                className="select select-bordered"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+              >
+                <option value="buyer">Buyer</option>
+                <option value="manager">Manager</option>
+              </select>
+            </div>
 
-          {/* email field */}
-          <label className="label">Email</label>
-          <input
-            type="email"
-            {...register("email", { required: true, minLength: 6 })}
-            className="input"
-            placeholder="Email"
-          />
-          {errors.email?.type === "required" && (
-            <p className="text-red-500">Email is required</p>
-          )}
+            {/* Password */}
+            <div className="form-control">
+              <label className="label-text flex items-center gap-2">
+                <FaLock /> Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                required
+                className="input input-bordered"
+              />
+            </div>
 
-          {/* password */}
-          <label className="label">Password</label>
-          <input
-            type="password"
-            {...register("password", {
-              required: true,
-              minLength: 6,
-            })}
-            className="input"
-            placeholder="password"
-          />
+            <button className="btn btn-primary w-full">
+              Register
+            </button>
 
-          {errors.password?.type === "required" && (
-            <p className="text-red-500">Password is required.</p>
-          )}
+            {/* Social Login */}
+            <SocialLogin />
+          </form>
 
-          {errors.password?.type === "minLength" && (
-            <p className="text-red-500">
-              Password must be 6 characters or longer
-            </p>
-          )}
-
-          <p className="text-red-500">
-            Password must have at least one uppercase, at least one lowercase,
-            at least one number, and at least one special characters
+          <p className="text-center mt-4">
+            Already have an account?{" "}
+            <Link to="/login" className="link link-primary">
+              Login
+            </Link>
           </p>
-
-          <div>
-            <a className="link link-hover">Forgot password?</a>
-          </div>
-          <button className="btn btn-neutral mt-4">Register</button>
-        </fieldset>
-        <p>
-          Already have an account?{" "}
-          <Link 
-          state={location.state}
-          className="text-blue-500 underline" to="/login">
-            Login
-          </Link>{" "}
-        </p>
-      </form>
-      <SocialLogin></SocialLogin>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default Register;
+
+
