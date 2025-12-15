@@ -15,6 +15,10 @@ import PendingOrders from "../pages/Dashboard/Manager/PendingOrders";
 import ApprovedOrders from "../pages/Dashboard/Manager/ApprovedOrders";
 import ManagerProfile from "../pages/Dashboard/Manager/ManagerProfile";
 import UpdateProduct from "../pages/Dashboard/Manager/UpdateProduct";
+import OrderPage from "../pages/Orders/OrderPage";
+import MyOrders from "../pages/Dashboard/Buyer/MyOrders";
+import BuyerRoute from "./BuyerRoute";
+import PrivateRoute from "./PrivateRoute";
 // import AuthLayout from "../layouts/AuthLayout";
 
 export const router = createBrowserRouter([
@@ -46,6 +50,15 @@ export const router = createBrowserRouter([
          Component: Contact
 
        },
+//        {
+//   path: "product/:id",
+//   element: (
+//     <PrivateRoute>
+//       <ProductDetails />
+//     </PrivateRoute>
+//   ),
+// },
+       
     ],
   },
 
@@ -104,6 +117,28 @@ export const router = createBrowserRouter([
           </ManagerRoute>
         ),
       },
+
+      {
+  path: "my-orders",
+  element: (
+    <PrivateRoute>
+      <BuyerRoute>
+        <MyOrders />
+      </BuyerRoute>
+    </PrivateRoute>
+  ),
+},
+
+{
+  path: "order/:id",
+  element: (
+    <PrivateRoute>
+      <BuyerRoute>
+        <OrderPage />
+      </BuyerRoute>
+    </PrivateRoute>
+  ),
+},
     ],
   },
 ]);
