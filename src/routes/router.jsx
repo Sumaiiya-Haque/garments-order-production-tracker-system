@@ -14,6 +14,7 @@ import ManageProducts from "../pages/Dashboard/Manager/ManageProducts";
 import PendingOrders from "../pages/Dashboard/Manager/PendingOrders";
 import ApprovedOrders from "../pages/Dashboard/Manager/ApprovedOrders";
 import ManagerProfile from "../pages/Dashboard/Manager/ManagerProfile";
+import UpdateProduct from "../pages/Dashboard/Manager/UpdateProduct";
 // import AuthLayout from "../layouts/AuthLayout";
 
 export const router = createBrowserRouter([
@@ -66,6 +67,16 @@ export const router = createBrowserRouter([
         element: (
           <ManagerRoute>
             <ManageProducts />
+          </ManagerRoute>
+        ),
+      },
+
+            // ✅ Update Product route
+      {
+        path: "update-product/:id",
+        element: (
+          <ManagerRoute>
+            <UpdateProduct />
           </ManagerRoute>
         ),
       },
