@@ -1,14 +1,13 @@
 import { Navigate } from "react-router";
-import useAuth from "../hooks/useAuth";
-
+import useRole from "../hooks/useRole";
 
 
 const BuyerRoute = ({ children }) => {
-  const { user,loading } = useAuth();
+  const { role, roleLoading } = useRole();
 
-  if(loading) return <p>Loading...</p>
+  if (roleLoading) return <p>Loading...</p>;
 
-  if (user?.role !== "buyer") {
+  if (role !== "buyer") {
     return <Navigate to="/" />;
   }
 
@@ -16,6 +15,7 @@ const BuyerRoute = ({ children }) => {
 };
 
 export default BuyerRoute;
+
 
 // const BuyerRoute = ({ children }) => {
 //   const { user, loading } = useAuth();

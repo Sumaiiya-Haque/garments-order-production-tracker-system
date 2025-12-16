@@ -1,8 +1,10 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import useAxiosSecure from "../../hooks/useAxiosSecure";
-import useAuth from "../../hooks/useAuth";
+
+
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
 
 const OrderForm = () => {
   const { id } = useParams();
@@ -86,7 +88,7 @@ const OrderForm = () => {
   if (!product) return <p className="text-center mt-10">Product not found</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="max-w-lg mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4">Order Form</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">

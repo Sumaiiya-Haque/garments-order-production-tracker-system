@@ -3,11 +3,13 @@ import { Link, NavLink } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
 import useAuth from "../../../../hooks/useAuth";
+import useRole from "../../../../hooks/useRole";
 
 
 const Navbar = () => {
   const { user, logOut } = useAuth(); 
   const [open, setOpen] = useState(false);
+  const { role, roleLoading } = useRole();
 
   const menuLinks = (
     <>
@@ -27,9 +29,25 @@ const Navbar = () => {
         </>
       )}
 
-      {user && (
-        <NavLink className="hover:text-indigo-600 transition" to="/dashboard">Dashboard</NavLink>
-      )}
+   {/* {user && !roleLoading && role === "manager" && (
+  <NavLink
+    className="hover:text-indigo-600 transition"
+    to="/dashboard"
+  >
+    Dashboard
+  </NavLink>
+)} */}
+
+{user && !roleLoading && ["manager", "admin"].includes(role) && (
+  <NavLink to="/dashboard">Dashboard</NavLink>
+)}
+
+   {/* Logged in user এর জন্য My Orders */}
+    {user && (
+      <NavLink className="hover:text-indigo-600 transition" to="/my-orders">
+        My Orders
+      </NavLink>
+    )}
     </>
   );
 

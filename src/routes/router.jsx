@@ -15,14 +15,18 @@ import PendingOrders from "../pages/Dashboard/Manager/PendingOrders";
 import ApprovedOrders from "../pages/Dashboard/Manager/ApprovedOrders";
 import ManagerProfile from "../pages/Dashboard/Manager/ManagerProfile";
 import UpdateProduct from "../pages/Dashboard/Manager/UpdateProduct";
-// import OrderForm from "../pages/Orders/OrderForm";
+
 
 import MyOrders from "../pages/Dashboard/Buyer/MyOrders";
 import BuyerRoute from "./BuyerRoute";
 import PrivateRoute from "./PrivateRoute";
 import ProductDetails from "../pages/Products/ProductDetails";
-import OrderForm from "../pages/Orders/OrderForm";
-// import AuthLayout from "../layouts/AuthLayout";
+
+import BuyerProfile from "../pages/Dashboard/Buyer/BuyerProfile";
+import TrackOrder from "../pages/Dashboard/Buyer/TrackOrder";
+import AllOrders from "../pages/Dashboard/Admin/AllOrders";
+import OrderForm from "../pages/Dashboard/Buyer/OrderForm";
+
 
 export const router = createBrowserRouter([
   {
@@ -31,120 +35,135 @@ export const router = createBrowserRouter([
     children: [
       {
          index: true,
-          Component: Home
-         },
-      {
-         path: "login",
-          Component: Login
-         },
+          Component: Home 
+        },
       { 
-        path: "register", 
-        Component: Register
-       },
-      {
-         path: "all-products",
-          Component: AllProducts 
+        path: "login",
+         Component: Login 
         },
       {
-         path: "about",
-          Component: About },
-      {
-         path: "contact",
-         Component: Contact
-
-       },
-       {
-  path: "product/:id",
-  element: (
-    <PrivateRoute>
-      <ProductDetails />
-    </PrivateRoute>
-  ),
-},
-       
-    ],
-  },
-
-  // 🔐 Dashboard Routes
-  {
-    path: "/dashboard",
-    Component: DashboardLayout,
-    children: [
-      {
-        path: "add-product",
-        element: (
-          <ManagerRoute>
-            <AddProduct />
-          </ManagerRoute>
-        ),
-      },
-      {
-        path: "manage-products",
-        element: (
-          <ManagerRoute>
-            <ManageProducts />
-          </ManagerRoute>
-        ),
-      },
-
-            // ✅ Update Product route
-      {
-        path: "update-product/:id",
-        element: (
-          <ManagerRoute>
-            <UpdateProduct />
-          </ManagerRoute>
-        ),
-      },
-      {
-        path: "pending-orders",
-        element: (
-          <ManagerRoute>
-            <PendingOrders />
-          </ManagerRoute>
-        ),
-      },
-      {
-        path: "approved-orders",
-        element: (
-          <ManagerRoute>
-            <ApprovedOrders />
-          </ManagerRoute>
-        ),
-      },
-      {
-        path: "profile",
-        element: (
-          <ManagerRoute>
-            <ManagerProfile />
-          </ManagerRoute>
-        ),
+         path: "register",
+          Component: Register 
+        },
+      { 
+        path: "all-products",
+         Component: AllProducts
+         },
+      { 
+        path: "about",
+         Component: About
+         },
+      { 
+        path: "contact", 
+        Component: Contact 
       },
 
       {
-  path: "my-orders",
+        path: "product/:id",
+        element: (
+          <PrivateRoute>
+            <ProductDetails />
+          </PrivateRoute>
+        ),
+      },
+
+          {
+  path: "order/:id",
   element: (
     <PrivateRoute>
       <BuyerRoute>
-        <MyOrders />
+        <OrderForm />
       </BuyerRoute>
     </PrivateRoute>
   ),
 },
 
-{
-  path: "order/:id",
-  element: (
-     <PrivateRoute>
-     
-       <BuyerRoute>
-       <OrderForm></OrderForm>
-       </BuyerRoute>
-     </PrivateRoute>
-     
+   {
+            path: "my-orders",
+            element: (
+              <BuyerRoute>
+                <MyOrders />
+              </BuyerRoute>
+            ),
+          },
+
+             {
+        path: "track-order/:orderId",
+        element: <TrackOrder />,
+      },
+      {
+        path: "buyer-profile",
+        element: <BuyerProfile />,
+      },
+      // ✅ Dashboard nested inside RootLayout
+      {
+        path: "dashboard",
+        element: (
+          <PrivateRoute>
+          <ManagerRoute>
+              <DashboardLayout />
+          </ManagerRoute>
+          </PrivateRoute>
+        ),
+        children: [
+          {
+            path: "add-product",
+            element: (
+              <ManagerRoute>
+                <AddProduct />
+              </ManagerRoute>
+            ),
+          },
+          {
+            path: "manage-products",
+            element: (
+              <ManagerRoute>
+                <ManageProducts />
+              </ManagerRoute>
+            ),
+          },
+          {
+            path: "update-product/:id",
+            element: (
+              <ManagerRoute>
+                <UpdateProduct />
+              </ManagerRoute>
+            ),
+          },
+          {
+            path: "pending-orders",
+            element: (
+              <ManagerRoute>
+                <PendingOrders />
+              </ManagerRoute>
+            ),
+          },
+          {
+            path: "approved-orders",
+            element: (
+              <ManagerRoute>
+                <ApprovedOrders />
+              </ManagerRoute>
+            ),
+          },
+          {
+            path: "manager-profile",
+            element: (
+              <ManagerRoute>
+                <ManagerProfile />
+              </ManagerRoute>
+            ),
+          },
+
+           {
+      path: "all-orders",  
+      element: <AllOrders /> 
+    }
+       
       
-  ),
-},
+        ],
+      },
     ],
   },
 ]);
+

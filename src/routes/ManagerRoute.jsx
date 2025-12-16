@@ -1,18 +1,18 @@
-// routes/ManagerRoute.jsx
 import { Navigate } from "react-router";
-import useAuth from "../hooks/useAuth";
-
+import useRole from "../hooks/useRole";
 
 const ManagerRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { role, roleLoading } = useRole();
 
-  if (loading) return <p>Loading...</p>;
-
-  if (user) {
-    return children;
+  if (roleLoading) {
+    return <p>Loading...</p>;
   }
 
-  return <Navigate to="/login" />;
+  if (role !== "manager") {
+    return <Navigate to="/" />;
+  }
+
+  return children;
 };
 
 export default ManagerRoute;
