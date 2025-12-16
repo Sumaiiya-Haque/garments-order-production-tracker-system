@@ -33,8 +33,8 @@ const UpdateProduct = () => {
           category: res.data.category || "",
           price: res.data.price || "",
           quantity: res.data.quantity || "",
-          moq: res.data.moq || "",
-          paymentMode: res.data.payment || "",
+          minOrder: res.data.minOrder || "",
+          paymentOptions: res.data.payment || "",
           showHome: res.data.showHome || false,
           image: res.data.image || "",
         });
@@ -124,10 +124,10 @@ const UpdateProduct = () => {
         />
         <input
           type="number"
-          name="moq"
+          name="minOrder"
           value={product.moq}
           onChange={handleChange}
-          placeholder="MOQ"
+          placeholder="MinOrder"
           className="w-full border p-2 rounded"
           required
         />

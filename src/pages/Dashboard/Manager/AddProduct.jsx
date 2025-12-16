@@ -21,7 +21,7 @@ const AddProduct = () => {
       category: form.category.value,
       price: Number(form.price.value),
       quantity: Number(form.quantity.value),
-      moq: Number(form.moq.value),
+      minOrder: Number(form.minOrder.value),
       payment: form.payment.value,
       showHome: form.showHome.checked,
     };
@@ -57,7 +57,7 @@ const AddProduct = () => {
 
         <input type="number" name="price" required placeholder="Price" className="input input-bordered w-full" />
         <input type="number" name="quantity" required placeholder="Available Quantity" className="input input-bordered w-full" />
-        <input type="number" name="moq" required placeholder="MOQ" className="input input-bordered w-full" />
+        <input type="number" name="minOrder" required placeholder="MinOrder" className="input input-bordered w-full" />
 
         <input type="file" multiple onChange={handleImagePreview} className="file-input w-full" />
 

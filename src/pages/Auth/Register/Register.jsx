@@ -2,24 +2,35 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import { FaUser, FaEnvelope, FaLock, FaImage } from "react-icons/fa";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import useAuth from "../../../hooks/useAuth";
 
 const Register = () => {
   const [role, setRole] = useState("buyer");
-  const { registerUser, updateUserProfile } = useAuth();
+  const [preview, setPreview] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
+  const { registerUser, updateUserProfile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
-  // 🔑 imgbb api key
   const imageHostingKey = "0c82c2c8707e2ebdb830fdcdc8ca8276";
   const imageHostingUrl = `https://api.imgbb.com/1/upload?key=${imageHostingKey}`;
 
+  // Handle photo preview
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setPreview(null);
+    }
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
-
     const form = e.target;
     const name = form.name.value;
     const email = form.email.value;
@@ -38,42 +49,41 @@ const Register = () => {
     }
 
     try {
-      // 🔹 Image Upload
+      // 🔹 1. Upload image
       const formData = new FormData();
       formData.append("image", imageFile);
 
-      const imgRes = await fetch(imageHostingUrl, {
-        method: "POST",
-        body: formData,
-      });
-
+      const imgRes = await fetch(imageHostingUrl, { method: "POST", body: formData });
       const imgData = await imgRes.json();
-
-      if (!imgData.success) {
-        throw new Error("Image upload failed");
-      }
+      if (!imgData.success) throw new Error("Image upload failed");
 
       const photoURL = imgData.data.display_url;
 
-      // 🔹 Firebase Register
+      // 🔹 2. Firebase Register
       await registerUser(email, password);
 
-      // 🔹 Update Profile
-      await updateUserProfile({
-        displayName: name,
-        photoURL: photoURL,
-      });
+      // 🔹 3. Update Firebase Profile
+      await updateUserProfile({ displayName: name, photoURL });
 
-      Swal.fire({
-        icon: "success",
-        title: "Registration Successful",
-        text: "Status: Pending",
+      // 🔹 4. Save to MongoDB backend
+      const userInfo = { name, email, photoURL, role };
+      const res = await fetch("http://localhost:3000/users", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(userInfo),
       });
+      const data = await res.json();
+      if (!data.insertedId && data.message !== "User already exists") {
+        throw new Error("User database save failed");
+      }
 
+      // ✅ Success
+      Swal.fire({ icon: "success", title: "Registration Successful", text: "Status: Pending" });
       form.reset();
+      setPreview(null);
       navigate(from, { replace: true });
-
     } catch (error) {
+      console.error(error);
       Swal.fire("Error", error.message, "error");
     }
   };
@@ -90,12 +100,7 @@ const Register = () => {
               <label className="label-text flex items-center gap-2">
                 <FaUser /> Name
               </label>
-              <input
-                type="text"
-                name="name"
-                required
-                className="input input-bordered"
-              />
+              <input type="text" name="name" required className="input input-bordered" />
             </div>
 
             {/* Email */}
@@ -103,12 +108,7 @@ const Register = () => {
               <label className="label-text flex items-center gap-2">
                 <FaEnvelope /> Email
               </label>
-              <input
-                type="email"
-                name="email"
-                required
-                className="input input-bordered"
-              />
+              <input type="email" name="email" required className="input input-bordered" />
             </div>
 
             {/* Photo Upload */}
@@ -121,8 +121,12 @@ const Register = () => {
                 name="photo"
                 accept="image/*"
                 required
+                onChange={handlePhotoChange}
                 className="file-input file-input-bordered"
               />
+              {preview && (
+                <img src={preview} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />
+              )}
             </div>
 
             {/* Role */}
@@ -139,21 +143,25 @@ const Register = () => {
             </div>
 
             {/* Password */}
-            <div className="form-control">
+            <div className="form-control relative">
               <label className="label-text flex items-center gap-2">
                 <FaLock /> Password
               </label>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 required
-                className="input input-bordered"
+                className="input input-bordered pr-10"
               />
+              <span
+                className="absolute right-3 top-[38px] cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+              </span>
             </div>
 
-            <button className="btn btn-primary w-full">
-              Register
-            </button>
+            <button className="btn btn-primary w-full">Register</button>
 
             {/* Social Login */}
             <SocialLogin />
@@ -172,5 +180,6 @@ const Register = () => {
 };
 
 export default Register;
+
 
 
