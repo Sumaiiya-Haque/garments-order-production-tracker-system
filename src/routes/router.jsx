@@ -26,6 +26,8 @@ import BuyerProfile from "../pages/Dashboard/Buyer/BuyerProfile";
 import TrackOrder from "../pages/Dashboard/Buyer/TrackOrder";
 import AllOrders from "../pages/Dashboard/Admin/AllOrders";
 import OrderForm from "../pages/Dashboard/Buyer/OrderForm";
+import AllProductsTable from "../pages/Dashboard/Admin/AllProductsTable";
+import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 
 
 export const router = createBrowserRouter([
@@ -158,6 +160,14 @@ export const router = createBrowserRouter([
            {
       path: "all-orders",  
       element: <AllOrders /> 
+    },
+           {
+      path: "all-products-table",  
+      element: <AllProductsTable /> 
+    },
+           {
+      path: "manage-users",  
+      element: <ManageUsers /> 
     }
        
       

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
-const AllProducts = () => {
+const AllProductsTable = () => {
   const axiosSecure = useAxiosSecure();
   const [products, setProducts] = useState([]);
 
@@ -113,4 +113,4 @@ const AllProducts = () => {
   );
 };
 
-export default AllProducts;
+export default AllProductsTable;

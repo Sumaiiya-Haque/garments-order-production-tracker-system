@@ -10,19 +10,23 @@ const HowItWorks = () => {
 
   return (
     <section className="my-20 px-6">
-      <h2 className="text-3xl font-bold text-center mb-10">How It Works</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-        {steps.map((s) => (
+      <h2 className="text-4xl md:text-5xl font-extrabold text-center mb-16 text-gray-800">
+        How It Works
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        {steps.map((s, index) => (
           <motion.div
             key={s.id}
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="p-6 rounded-xl shadow-lg bg-base-100 text-center border"
+            transition={{ duration: 0.6, delay: index * 0.2 }}
+            className="p-8 rounded-2xl shadow-xl bg-gradient-to-tr from-white to-gray-50 border border-gray-200 text-center hover:scale-105 hover:shadow-2xl transition-transform duration-300"
           >
-            <div className="text-4xl text-primary mb-4 flex justify-center">{s.icon}</div>
-            <h3 className="text-xl font-bold mb-2">{s.title}</h3>
-            <p className="text-gray-600">{s.desc}</p>
+            <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/40 text-primary text-3xl md:text-4xl">
+              {s.icon}
+            </div>
+            <h3 className="text-2xl font-semibold mb-3 text-gray-800">{s.title}</h3>
+            <p className="text-gray-600 leading-relaxed">{s.desc}</p>
           </motion.div>
         ))}
       </div>
@@ -31,3 +35,4 @@ const HowItWorks = () => {
 };
 
 export default HowItWorks;
+
