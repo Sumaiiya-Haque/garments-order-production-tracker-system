@@ -12,7 +12,7 @@ const ExtraSection2 = () => {
           className="relative overflow-hidden rounded-3xl shadow-2xl"
         >
           <img
-            src="https://i.ibb.co/f0v2hy5/garments-factory.jpg"
+            src="https://i.ibb.co.com/mCkT9sdV/Tahsin-Profile-Fiverr.jpg"
             alt="Garments Factory"
             className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
           />

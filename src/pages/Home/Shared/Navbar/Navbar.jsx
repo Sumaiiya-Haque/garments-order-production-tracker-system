@@ -51,7 +51,7 @@ const menuLinks = (
         </NavLink>
 
         <NavLink
-          className="px-3 py-1 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold hover:from-indigo-600 hover:to-purple-600 transition duration-200"
+          className="px-3 py-1 rounded-lg bg-gradient-to-r from-primary to-secondary text-white font-semibold hover:from-indigo-600 hover:to-purple-600 transition duration-200"
           to="/register"
         >
           Register
@@ -192,7 +192,7 @@ const menuLinks = (
                   setOpen(false);
                   logOut();
                 }}
-                className="w-full bg-gradient-to-r from-red-500 to-pink-500 text-white py-2 rounded-lg font-semibold shadow hover:from-red-600 hover:to-pink-600 transition"
+                className="w-full bg-gradient-to-r from-primary to-secondary text-white py-2 rounded-lg font-semibold shadow hover:from-red-600 hover:to-pink-600 transition"
               >
                 Logout
               </button>
