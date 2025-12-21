@@ -33,6 +33,7 @@ import UpdateProduct from "../pages/Dashboard/Manager/UpdateProduct";
 import AllOrders from "../pages/Dashboard/Admin/AllOrders";
 import AllProductsTable from "../pages/Dashboard/Admin/AllProductsTable";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
+import Payment from "../pages/Dashboard/Buyer/Payment";
 
 export const router = createBrowserRouter([
   {
@@ -65,6 +66,17 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+
+      {
+  path: "payment",
+  element: (
+    <PrivateRoute>
+      <BuyerRoute>
+        <Payment />
+      </BuyerRoute>
+    </PrivateRoute>
+  ),
+},
 
       // ✅ DASHBOARD (সব logged user)
       {

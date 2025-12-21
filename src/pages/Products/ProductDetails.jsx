@@ -57,19 +57,26 @@ const ProductDetails = () => {
 
           {/* Payment Options */}
           {product.paymentOptions?.length > 0 && (
+            // <div className="mt-4">
+            //   <h4 className="font-semibold mb-1">Payment Options</h4>
+            //   <div className="flex gap-2 flex-wrap">
+            //     {product.paymentOptions.map((option, index) => (
+            //       <span
+            //         key={index}
+            //         className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm"
+            //       >
+            //         {option}
+            //       </span>
+            //     ))}
+            //   </div>
+            // </div>
+
             <div className="mt-4">
-              <h4 className="font-semibold mb-1">Payment Options</h4>
-              <div className="flex gap-2 flex-wrap">
-                {product.paymentOptions.map((option, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm"
-                  >
-                    {option}
-                  </span>
-                ))}
-              </div>
-            </div>
+  <h4 className="font-semibold mb-1">Payment Method</h4>
+  <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+    {product.payment}
+  </span>
+</div>
           )}
 
           {/* Order Button */}

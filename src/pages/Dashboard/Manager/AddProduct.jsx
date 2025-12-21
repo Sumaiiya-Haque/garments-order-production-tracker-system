@@ -1,10 +1,12 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
 
 const AddProduct = () => {
   const [images, setImages] = useState([]);
   const axiosSecure = useAxiosSecure();
+  const {user} = useAuth()
 
   const handleImagePreview = (e) => {
     const files = Array.from(e.target.files);
@@ -27,7 +29,11 @@ const AddProduct = () => {
     };
 
     try {
-      const res = await axiosSecure.post("/products", product);
+      const res =await axiosSecure.post("/products", product, {
+  headers: {
+    email: user.email,
+  },
+});
 
       if (res.data.insertedId) {
         Swal.fire("Success!", "Product Added Successfully", "success");

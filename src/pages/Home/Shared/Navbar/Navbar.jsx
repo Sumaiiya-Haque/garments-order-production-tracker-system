@@ -59,7 +59,7 @@ const menuLinks = (
       </>
     )}
 
-    {user && !roleLoading && ["manager", "admin"].includes(role) && (
+    {user && !roleLoading && ["manager", "buyer","admin"].includes(role) && (
       <NavLink
         className="px-2 py-1 rounded-md text-gray-700 font-medium hover:text-indigo-600 hover:underline transition duration-200"
         to="/dashboard"
@@ -68,14 +68,14 @@ const menuLinks = (
       </NavLink>
     )}
 
-    {user && (
+    {/* {user && (
       <NavLink
         className="px-2 py-1 rounded-md text-gray-700 font-medium hover:text-indigo-600 hover:underline transition duration-200"
         to="/my-orders"
       >
         My Orders
       </NavLink>
-    )}
+    )} */}
   </>
 );
 

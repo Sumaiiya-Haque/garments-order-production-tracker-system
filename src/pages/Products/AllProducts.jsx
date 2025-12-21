@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import axios from "axios";
 
 // import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
@@ -11,6 +12,8 @@ const AllProducts = () => {
   const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
+    // axios.get(`/products/manager?email=${user.email}`)
+// 
     axiosSecure
       .get("http://localhost:3000/products") // API call
       .then((res) => {
@@ -22,6 +25,10 @@ const AllProducts = () => {
         setLoading(false);
       });
   }, []);
+
+
+
+  
 
   if (loading) {
     return <p className="text-center mt-10">Loading...</p>;
